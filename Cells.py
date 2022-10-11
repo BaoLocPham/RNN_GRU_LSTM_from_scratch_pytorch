@@ -119,7 +119,7 @@ class LSTMCell(nn.Module):
 
         i_t = torch.sigmoid(input_gate)
         f_t = torch.sigmoid(forget_gate)
-        g_t = torch.sigmoid(cell_gate)
+        g_t = torch.tanh(cell_gate)
         o_t = torch.sigmoid(output_gate)
 
         cy = cx * f_t + i_t * g_t
