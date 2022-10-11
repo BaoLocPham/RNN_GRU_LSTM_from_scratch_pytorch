@@ -1,5 +1,14 @@
 import re
 import numpy as np
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('punkt')
+nltk.download('omw-1.4')
+stopwords = set(stopwords.words('english'))
 
 
 def rm_link(text):
@@ -82,9 +91,43 @@ def spell_correction(text):
     return re.sub(r'(.)\1+', r'\1\1', text)
 
 
+def tokenize(text):
+    """
+    Tokenize string
+    """
+    return word_tokenize(text)
+
+
+def rm_stopwords(text):
+    """
+    Remove stopwords
+    """
+    return [i for i in text if i not in stopwords]
+
+
+def lemmatize(text):
+    """
+    Lemmatize string
+    """
+    lemmatizer = WordNetLemmatizer()
+    lemmas = [lemmatizer.lemmatize(t) for t in text]
+    # make sure lemmas does not contains sotpwords
+    return rm_stopwords(lemmas)
+
+
+def preprocess_pipeline(text):
+    """
+    Preprocess pipeline
+    """
+    tokens = tokenize(text)
+    no_stopwords = rm_stopwords(tokens)
+    lemmas = lemmatize(no_stopwords)
+    return ' '.join(lemmas)
+
+
 def clean_pipeline(text):
     """
-        combine all preprocessing function
+    Combine all preprocessing function
     """
     no_link = rm_link(text)
     no_html = rm_html(no_link)
